@@ -17,14 +17,12 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^13.1.5"
+    "electron": "^13.1.6"
   },
   "dependencies": {
-    "crypto": "^1.0.1",
     "crypto-js": "^4.0.0",
-    "fs": "0.0.1-security",
-    "json-stringify-safe": "^5.0.1",
-    "node-sass": "^6.0.1",
-    "nodemon": "^2.0.10"
+    "electron-store": "^8.0.0",
+    "path": "^0.12.7",
+    "uuidv4": "^6.2.11"
   }
 }
