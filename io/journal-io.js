@@ -149,6 +149,11 @@ function deleteJournal(uuid) {
     }
 }
 
+/**
+ * Delete all journals
+ * 
+ * @returns 
+ */
 function deleteAllJournals() {
     const keys = dictionaryStore.get("dictionary");
     if (!keys) {
@@ -160,5 +165,4 @@ function deleteAllJournals() {
     }
 }
 
-console.log(journalsExist());
 module.exports = { journalsExist, saveNewJournal, saveExistingJournal, getJournal, getAllJournals, deleteJournal, deleteAllJournals }

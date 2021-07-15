@@ -70,7 +70,6 @@ window.addEventListener('load', () => {
             journalMenuList.innerHTML = "";
 
             journals.forEach(journal => {
-                console.log(journal);
                 let listElement = document.createElement("li");
                 let journalButton = document.createElement("button");
                 journalButton.id = journal.uuid;
@@ -119,13 +118,9 @@ window.addEventListener('load', () => {
         form.appendChild(saveButton);
     }
 
-    /*
-
-    */
     preventValidByDefault();
     passwordPlaceholderHandler()
     handlePasswordInput();
     forgotPasswordHandler()
     newButtonHandler();
-
 })
