@@ -42,7 +42,7 @@ window.addEventListener('load', () => {
     //Customize user password placeholder based on whether they have used the application before or not.
     function passwordPlaceholderHandler() {
         window.api.send("toGetJournalsExist", { data: "" });
-        window.api.receive("fromJournalsExist", (data) => {
+        window.api.receive("fromGetJournalsExist", (data) => {
             if (data) {
                 document.getElementById("password").placeholder = "Enter your password."
             } else {
