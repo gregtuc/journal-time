@@ -41,7 +41,7 @@ window.addEventListener('load', () => {
 
     //Customize user password placeholder based on whether they have used the application before or not.
     function passwordPlaceholderHandler() {
-        window.api.send("toGetJournalsExist");
+        window.api.send("toGetJournalsExist", { data: "" });
         window.api.receive("fromJournalsExist", (data) => {
             if (data) {
                 document.getElementById("password").placeholder = "Enter your password."
@@ -54,14 +54,14 @@ window.addEventListener('load', () => {
     //Method to delete everything if a user forgot their password.
     function forgotPasswordHandler() {
         document.getElementById("forgot-password-button").onclick = function () {
-            window.api.send("toDeleteAllJournals", {});
+            window.api.send("toDeleteAllJournals", { data: "" });
             passwordPlaceholderHandler();
         }
     }
 
     //Fetch journals and inject their contents into the menu bar. Attach event handlers to click events on the menu items.
     function fetchJournals() {
-        window.api.send("toGetAllJournals", {});
+        window.api.send("toGetAllJournals", { data: "" });
         window.api.receive("fromGetAllJournals", (journals) => {
             if (journals !== false) {
                 document.getElementById("password").setCustomValidity('');
