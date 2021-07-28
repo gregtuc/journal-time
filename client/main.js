@@ -43,40 +43,6 @@ function createWindow() {
   ipcMain.on("toSavePassword", (event, args) => {
     process.env.PASSWORD = args.data;
   });
-
-  /*
-  0 = journalsExist
-  1 = deleteAllJournals
-  2 = saveExistingJournal
-  3 = saveNewJournal
-  4 = getAllJournals
-  5 = storePasswordInProcess
-  */
-  ipcMain.on("toMain", (event, args) => {
-    var result = true;
-
-    switch (args.id) {
-      case 0:
-        result = journalIO.journalsExist();
-        mainWindow.webContents.send("getJournalsExistFromMain", result);
-        break;
-      case 1:
-        journalIO.deleteAllJournals();
-        break;
-      case 2:
-        journalIO.saveExistingJournal(args.data.uuid, args.data.title, args.data.body)
-        break;
-      case 3:
-        journalIO.saveNewJournal(args.data.title, args.data.body)
-        break;
-      case 4:
-        result = journalIO.getAllJournals();
-        mainWindow.webContents.send("getAllJournalsFromMain", result);
-        break;
-      case 5:
-        process.env.PASSWORD = args.data;
-    }
-  });
 }
 
 // This method will be called when Electron has finished
