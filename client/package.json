@@ -23,6 +23,7 @@
     "crypto-js": "^4.0.0",
     "electron-store": "^8.0.0",
     "path": "^0.12.7",
+    "sentiment": "^5.0.2",
     "uuidv4": "^6.2.11"
   }
 }

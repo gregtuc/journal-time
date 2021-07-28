@@ -18,6 +18,7 @@ const dictionaryStore = new Store({ dictionaryModel });
  */
 function journalsExist() {
     const keys = dictionaryStore.get("dictionary");
+    if (keys === undefined) return false;
     return keys.length >= 1
 }
 
@@ -56,6 +57,10 @@ function removeKeyFromDictionary(uuid) {
 function saveNewJournal(title, body) {
     const userId = uuid_v4();
     journalStore.set(userId, {
+        datetime: {
+            date: new Date().toDateString(),
+            time: new Date().toTimeString()
+        },
         title: title,
         body: encryptor.encrypt(body, process.env.PASSWORD)
     })
@@ -75,6 +80,10 @@ function saveNewJournal(title, body) {
  */
 function saveExistingJournal(uuid, title, body) {
     journalStore.set(uuid, {
+        datetime: {
+            date: new Date().toDateString(),
+            time: new Date().toTimeString()
+        },
         title: title,
         body: encryptor.encrypt(body, process.env.PASSWORD)
     })
@@ -99,6 +108,7 @@ function getJournal(uuid) {
         if (decryptedText !== false) {
             return {
                 uuid: uuid,
+                datetime: data.datetime,
                 title: data.title,
                 body: decryptedText
             };

@@ -1,9 +1,5 @@
-const journalIO = require('./io/journal-io');
 
-// All of the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
 window.addEventListener('load', () => {
-
     //Overriding the 'valid' attribute of the password input field.
     function preventValidByDefault() {
         var passwordInput = document.getElementById("password");
@@ -24,8 +20,7 @@ window.addEventListener('load', () => {
         var submitPasswordInput = document.getElementById("password");
 
         submitPasswordButton.onclick = function () {
-            process.env.PASSWORD = String(document.getElementById("password").value).trim();
-            hidePasswordModal();
+            window.api.send("toSavePassword", { data: String(document.getElementById("password").value).trim() });
             fetchJournals();
         }
 
@@ -46,43 +41,53 @@ window.addEventListener('load', () => {
 
     //Customize user password placeholder based on whether they have used the application before or not.
     function passwordPlaceholderHandler() {
-        if (journalIO.journalsExist()) {
-            document.getElementById("password").placeholder = "Enter your password."
-        } else {
-            document.getElementById("password").placeholder = "Enter a new PERMANENT password."
-        }
+        window.api.send("toGetJournalsExist");
+        window.api.receive("fromJournalsExist", (data) => {
+            if (data) {
+                document.getElementById("password").placeholder = "Enter your password."
+            } else {
+                document.getElementById("password").placeholder = "Enter a new PERMANENT password."
+            }
+        });
     }
 
     //Method to delete everything if a user forgot their password.
     function forgotPasswordHandler() {
         document.getElementById("forgot-password-button").onclick = function () {
-            journalIO.deleteAllJournals();
+            window.api.send("toDeleteAllJournals", {});
             passwordPlaceholderHandler();
         }
     }
 
     //Fetch journals and inject their contents into the menu bar. Attach event handlers to click events on the menu items.
     function fetchJournals() {
-        var journals = journalIO.getAllJournals();
-        if (journals !== false) {
-            document.getElementById("password").setCustomValidity('');
-            var journalMenuList = document.getElementById("journal-menu-list");
-            journalMenuList.innerHTML = "";
+        window.api.send("toGetAllJournals", {});
+        window.api.receive("fromGetAllJournals", (journals) => {
+            if (journals !== false) {
+                document.getElementById("password").setCustomValidity('');
+                hidePasswordModal();
+                var journalMenuList = document.getElementById("journal-menu-list");
+                journalMenuList.innerHTML = "";
 
-            journals.forEach(journal => {
-                let listElement = document.createElement("li");
-                let journalButton = document.createElement("button");
-                journalButton.id = journal.uuid;
-                journalButton.className = "primary-button";
-                journalButton.textContent = journal.title;
-
-                journalButton.onclick = function () {
-                    generateJournalForm(journal.uuid, journal.title, journal.body);
+                for (var i = 0; i < journals.length; i++) {
+                    fetchJournalLogic(journals[i].uuid, journals[i].title, journals[i].body, journalMenuList)
                 }
-                listElement.appendChild(journalButton);
-                journalMenuList.appendChild(listElement);
-            })
+            }
+        });
+    }
+
+    function fetchJournalLogic(uuid, title, body, journalMenuList) {
+        let listElement = document.createElement("li");
+        let journalButton = document.createElement("button");
+        journalButton.id = uuid;
+        journalButton.className = "primary-button";
+        journalButton.textContent = title;
+
+        journalButton.onclick = function () {
+            generateJournalForm(uuid, title, body);
         }
+        listElement.appendChild(journalButton);
+        journalMenuList.appendChild(listElement);
     }
 
     //Generate the Journal Form in the center of the page with the values passed as parameters.
@@ -104,9 +109,9 @@ window.addEventListener('load', () => {
         saveButton.className = "primary-button";
         saveButton.onclick = function () {
             if (uuid !== "") {
-                journalIO.saveExistingJournal(uuid, document.getElementById("journal-title").value, document.getElementById("journal-board").value);
+                window.api.send("toSaveExistingJournal", { data: { uuid: uuid, title: document.getElementById("journal-title").value, body: document.getElementById("journal-board").value } });
             } else {
-                journalIO.saveNewJournal(document.getElementById("journal-title").value, document.getElementById("journal-board").value);
+                window.api.send("toSaveNewJournal", { data: { title: document.getElementById("journal-title").value, body: document.getElementById("journal-board").value } });
             }
             fetchJournals();
         }

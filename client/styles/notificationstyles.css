@@ -1,0 +1,69 @@
+.my-notify-info,
+.my-notify-success,
+.my-notify-warning,
+.my-notify-error {
+  padding: 10px;
+  margin: 10px 0;
+  width: 50%;
+  margin-left: 25%;
+  visibility: hidden;
+}
+.my-notify-info:before,
+.my-notify-success:before,
+.my-notify-warning:before,
+.my-notify-error:before {
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: 400;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1em;
+  margin-left: 0.2em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.my-notify-info:before {
+  content: "\f05a";
+}
+.my-notify-success:before {
+  content: "\f00c";
+}
+.my-notify-warning:before {
+  content: "\f071";
+}
+.my-notify-error:before {
+  content: "\f057";
+}
+.my-notify-info {
+  color: #00529b;
+  background-color: #bde5f8;
+}
+.my-notify-success {
+  color: #4f8a10;
+  background-color: #dff2bf;
+}
+.my-notify-warning {
+  color: #9f6000;
+  background-color: #feefb3;
+}
+.my-notify-error {
+  color: #d8000c;
+  background-color: #ffd2d2;
+}
+
+.m-fadeOut {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 300ms, opacity 300ms;
+}
+.m-fadeIn {
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 0s linear 0s, opacity 300ms;
+}
