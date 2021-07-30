@@ -93,6 +93,30 @@ function saveExistingJournal(uuid, title, body) {
 }
 
 /**
+ * Save a journal from a pairing event
+ * 
+ * @param {string} title
+ * @param {string} body
+ * @param {string} datetime
+ */
+function saveNewJournalFromPairing(title, body, datetime) {
+    const userId = uuid_v4();
+    journalStore.set(userId, {
+        datetime: {
+            date: new Date(datetime.date).toDateString(),
+            time: new Date(datetime.time).toTimeString()
+        },
+        title: title,
+        body: body
+    })
+    if (!journalStore.get(userId)) {
+        console.warn("Failed to save the journal.");
+    } else {
+        addKeyToDictionary(userId);
+    }
+}
+
+/**
  * Get a specific journal
  * 
  * @param {string} uuid 
@@ -120,6 +144,27 @@ function getJournal(uuid) {
 }
 
 /**
+ * Get a specific encrypted journal
+ * 
+ * @param {string} uuid 
+ * @returns a single journal object
+ */
+function getEncryptedJournal(uuid) {
+    const data = journalStore.get(uuid);
+    if (!data) {
+        console.warn("Failed to get data for the given uuid");
+        return false;
+    } else {
+        return {
+            uuid: uuid,
+            datetime: data.datetime,
+            title: data.title,
+            body: data.body
+        };
+    }
+}
+
+/**
  * Get all journals
  * 
  * @returns an array of journal objects
@@ -141,6 +186,31 @@ function getAllJournals() {
     }
     return journals;
 }
+
+/**
+ * Get all encrypted journals
+ * 
+ * @returns an array of journal objects
+ */
+function getAllEncryptedJournals() {
+    let journals = [];
+    const keys = dictionaryStore.get("dictionary");
+
+    if (!keys) {
+        return false;
+    }
+    for (var i = 0; i < keys.length; i++) {
+        const currentJournal = getEncryptedJournal(keys[i]);
+        if (currentJournal === false) {
+            return false;
+        } else {
+            journals.push(currentJournal);
+        }
+    }
+    return journals;
+}
+
+
 
 /**
  * Delete a specific journal
@@ -175,4 +245,4 @@ function deleteAllJournals() {
     }
 }
 
-module.exports = { journalsExist, saveNewJournal, saveExistingJournal, getJournal, getAllJournals, deleteJournal, deleteAllJournals }
+module.exports = { journalsExist, saveNewJournal, saveExistingJournal, saveNewJournalFromPairing, getJournal, getAllJournals, getAllEncryptedJournals, getEncryptedJournal, deleteJournal, deleteAllJournals }

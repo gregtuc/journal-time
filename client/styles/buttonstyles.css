@@ -34,3 +34,7 @@ button.primary-button:hover::after {
 #forgot-password-button {
   margin-left: 18%;
 }
+
+#pair-button {
+  margin: 1%;
+}

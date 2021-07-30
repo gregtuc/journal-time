@@ -10,8 +10,8 @@ window.addEventListener('load', () => {
 
     //Hide the password modal.
     function hidePasswordModal() {
-        const modal = document.querySelector(".modal");
-        modal.classList.remove("is-open");
+        const passwordModal = document.querySelector(".modal-password");
+        passwordModal.classList.remove("is-open");
     }
 
     //Handling password submission.
@@ -116,16 +116,148 @@ window.addEventListener('load', () => {
             fetchJournals();
         }
 
+        var saveButtonContainer = document.createElement("div");
+        saveButtonContainer.className = "center-save-button";
+        saveButtonContainer.append(saveButton);
+
         var form = document.getElementById("journal-form");
         form.innerHTML = "";
         form.appendChild(titleInput);
         form.appendChild(bodyInput);
-        form.appendChild(saveButton);
+        form.appendChild(saveButtonContainer);
     }
 
+    //Method to handle the transitions between inputs in the authenticator
+    function handleAuthenticator() {
+        var body = document.getElementById("wrapper");
+        if (body) {
+            body.addEventListener("keyup", function (e) {
+                var key = e.key;
+                var t = document.getElementById(e.target.id);
+                var sib = document.getElementById(t.nextElementSibling.id);
+                if (e.target.id === "pin6") {
+                    document.activeElement.blur();
+                    return false;
+                }
+                if (String(key).toLowerCase().trim() != "tab" && (key < 0 || key > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (String(key).toLowerCase().trim() === "tab") {
+                    return true;
+                }
+                if (!sib) {
+                    sib = body.getElementsByTagName('input')[0];
+                }
+                sib.focus();
+            })
+            body.addEventListener("keydown", function (e) {
+                var key = e.key;
+                if (String(key).toLowerCase().trim() === "tab" || (key >= 1 && key <= 9)) {
+                    return true;
+                }
+                e.preventDefault();
+                return false;
+            })
+            body.addEventListener("click", function (e) {
+                var clickedElement = document.getElementById(e.target.id);
+                if (clickedElement != null) {
+                    clickedElement.focus();
+                }
+            })
+        }
+    }
+
+    //Method to add the is-open class to the authenticator model
+    function handleAuthenticatorModalOpen() {
+        document.getElementById("pair-button").addEventListener("click", function () {
+            const authenticatorModal = document.querySelector("#wrapper");
+            authenticatorModal.classList.add("is-open");
+        })
+    }
+
+    //Method to handle user input on whether they want to generate a code (alpha) or submit a code that they have on another device (beta)
+    function handleAuthenticatorInputs() {
+        document.getElementById("alpha-signal").addEventListener("click", function () {
+            handleAlphaPairer();
+        })
+    }
+
+    //Method to get a code for alpha connections
+    function handleAlphaPairer() {
+        window.api.send("toPairDevices", {
+            data: {
+                type: true
+            }
+        });
+        window.api.receive("fromPairDevices", (data) => {
+            if (data.code) {
+
+                console.log(data.code);
+                //Insert the code into the input elements
+                for (var i = 0; i < 6; i++) {
+                    switch (i) {
+                        case 0:
+                            var node = document.getElementById("pin1");
+                            node.value = String(data.code).charAt(0);
+                            node.disabled = true;
+                            break;
+                        case 1:
+                            var node = document.getElementById("pin2");
+                            node.value = String(data.code).charAt(1);
+                            node.disabled = true;
+                            break;
+                        case 2:
+                            var node = document.getElementById("pin3");
+                            node.value = String(data.code).charAt(2);
+                            node.disabled = true;
+                            break;
+                        case 3:
+                            var node = document.getElementById("pin4");
+                            node.value = String(data.code).charAt(3);
+                            node.disabled = true;
+                            break;
+                        case 4:
+                            var node = document.getElementById("pin5");
+                            node.value = String(data.code).charAt(4);
+                            node.disabled = true;
+                            break;
+                        case 5:
+                            var node = document.getElementById("pin6");
+                            node.value = String(data.code).charAt(5);
+                            node.disabled = true;
+                    }
+                }
+
+                //Modify the pairing button.
+                var pairingButton = document.getElementById("authenticate-button")
+                pairingButton.textContent = "Waiting for response...";
+                pairingButton.disabled = true;
+
+                //Modify the pairing info message.
+                var pairingMessage = document.getElementById("authentication-message");
+                pairingMessage.textContent = "Please enter this 6-digit verification code on your other device."
+            }
+        });
+    }
+
+    //Method to submit a code for beta connections
+    function handleBetaPairer(code) {
+        window.api.send("toPairDevices", {
+            data: {
+                type: false,
+                code: code
+            }
+        });
+    }
+
+    handleAuthenticator();
+    handleAuthenticatorModalOpen();
+    handleAuthenticatorInputs();
     preventValidByDefault();
     passwordPlaceholderHandler()
     handlePasswordInput();
     forgotPasswordHandler()
     newButtonHandler();
+    handleAuthenticator();
 })

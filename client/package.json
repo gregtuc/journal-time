@@ -20,10 +20,13 @@
     "electron": "^13.1.6"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
     "electron-store": "^8.0.0",
+    "jquery": "^3.6.0",
     "path": "^0.12.7",
     "sentiment": "^5.0.2",
-    "uuidv4": "^6.2.11"
+    "uuidv4": "^6.2.11",
+    "ws": "^8.0.0"
   }
 }

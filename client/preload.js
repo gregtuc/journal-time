@@ -10,13 +10,13 @@ try {
         "api", {
         send: (channel, data) => {
             // whitelist channels
-            let validChannels = ["toGetJournalsExist", "toDeleteAllJournals", "toSaveExistingJournal", "toSaveNewJournal", "toGetAllJournals", "toSavePassword"];
+            let validChannels = ["toGetJournalsExist", "toDeleteAllJournals", "toSaveExistingJournal", "toSaveNewJournal", "toGetAllJournals", "toSavePassword", "toPairDevices"];
             if (validChannels.includes(channel)) {
                 ipcRenderer.send(channel, data);
             }
         },
         receive: (channel, func) => {
-            let validChannels = ["fromGetJournalsExist", "fromGetAllJournals"];
+            let validChannels = ["fromGetJournalsExist", "fromGetAllJournals", "fromPairDevices"];
             if (validChannels.includes(channel)) {
                 // Deliberately strip event as it includes `sender` 
                 ipcRenderer.on(channel, (event, ...args) => func(...args));

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="./styles/sidemenustyles.css" />
     <link rel="stylesheet" href="./styles/buttonstyles.css" />
     <link rel="stylesheet" href="./styles/notificationstyles.css" />
+    <link rel="stylesheet" href="./styles/authenticatorstyles.css" />
     <title>Journal</title>
   </head>
   <body>
@@ -313,8 +314,8 @@
           </g>
         </svg>
       </div>
-      <div class="modal is-open">
-        <div class="modal-container">
+      <div class="modal-password is-open">
+        <div class="modal-password-container">
           <form id="password-form">
             <input id="password" type="password" required="required" />
             <input id="login" type="checkbox" />
@@ -344,13 +345,97 @@
           </form>
         </div>
       </div>
+      <div id="wrapper">
+        <div id="dialog">
+          <span
+            id="authenticator-close"
+            class="close"
+            onclick='document.querySelector("#wrapper").classList.remove("is-open");'
+            >&times;</span
+          >
+          <h3 id="authentication-message">
+            Please enter the 6-digit verification code shown on your other
+            device.
+          </h3>
+          <span
+            >(we want to make sure it's you before we contact our movers)</span
+          >
+          <div id="form">
+            <input
+              type="text"
+              maxlength="1"
+              size="1"
+              min="0"
+              max="9"
+              pattern="[0-9]{1}"
+              id="pin1"
+            />
+            <input
+              type="text"
+              maxlength="1"
+              size="1"
+              min="0"
+              max="9"
+              pattern="[0-9]{1}"
+              id="pin2"
+            /><input
+              type="text"
+              maxlength="1"
+              size="1"
+              min="0"
+              max="9"
+              pattern="[0-9]{1}"
+              id="pin3"
+            /><input
+              type="text"
+              maxlength="1"
+              size="1"
+              min="0"
+              max="9"
+              pattern="[0-9]{1}"
+              id="pin4"
+            />
+            <input
+              type="text"
+              maxlength="1"
+              size="1"
+              min="0"
+              max="9"
+              pattern="[0-9]{1}"
+              id="pin5"
+            />
+            <input
+              type="text"
+              maxlength="1"
+              size="1"
+              min="0"
+              max="9"
+              pattern="[0-9]{1}"
+              id="pin6"
+            />
+            <button id="authenticate-button" class="primary-button">
+              Verify
+            </button>
+          </div>
+
+          <div>
+            <br />
+            <a id="alpha-signal" href="#">Don't have a code?</a><br />
+          </div>
+        </div>
+      </div>
       <div class="menu">
         <div class="title">JOURNALS ☰</div>
         <ul id="journal-menu-list" class="nav"></ul>
       </div>
     </div>
     <div name="journal-elements">
-      <button id="new-button" class="primary-button">New 📘</button>
+      <div class="center-new-button">
+        <button id="new-button" class="primary-button">New 📘</button>
+        <button id="pair-button" class="primary-button">
+          Pair with another device
+        </button>
+      </div>
       <div class="center">
         <article>
           <section>

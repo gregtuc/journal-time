@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const journalIO = require('./io/journal-io');
+const pairer = require('./pairing/pairing');
 
 function createWindow() {
 
@@ -42,6 +43,36 @@ function createWindow() {
   });
   ipcMain.on("toSavePassword", (event, args) => {
     process.env.PASSWORD = args.data;
+  });
+  ipcMain.on("toGetSentiment", (event, args) => {
+    mainWindow.webContents.send("fromGetSentiment", result);
+  });
+  ipcMain.on("toPairDevices", (event, args) => {
+    if (args.data.type == true) {
+      pairer.alphaConnectionPartOne().then(result => {
+        //Here I can send the code back to the renderer to display.
+        mainWindow.webContents.send("fromPairDevices", result);
+        pairer.alphaConnectionPartTwo(result).then(result => {
+          //This will only be reached once the code was matched.
+          //Log and then Save the new Journals.
+          console.log(result);
+          for (var i = 0; i < result.journals.length; i++) {
+            journalIO.saveNewJournalFromPairing(result.journals[i].title, result.journals[i].body, result.journals[i].datetime);
+          }
+        })
+      })
+    } else {
+      var code = args.data;
+      pairer.betaConnection(code).then(result => {
+        //This will only be reached once the code was matched.
+        //Log and then Save the new Journals.
+        console.log(result);
+        for (var i = 0; i < result.journals.length; i++) {
+          journalIO.saveNewJournalFromPairing(result.journals[i].title, result.journals[i].body, result.journals[i].datetime);
+        }
+      })
+    }
+    //mainWindow.webContents.send("fromPairDevices", result);
   });
 }
 
