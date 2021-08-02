@@ -1,30 +1,5 @@
 const axios = require('axios');
 
-/*
-//The party that doesn't have to enter the code, just has it displayed on their screen.
-async function alphaConnection() {
-    return new Promise((resolve, reject) => {
-        axios.get('http://localhost:8080/initializePairing')
-            .then((response) => {
-                axios.post('http://localhost:8080/waitForMatch', JSON.stringify(response.data))
-                    .then((result) => {
-                        //Now that the code has been verified as match, initialize a file exchange with the server.
-                        if (result.data.matched == true) {
-                            sendJournalsToServer(result.data.code).then(result => {
-                                //The resolved result is the data from the other party.
-                                resolve(result);
-                            })
-                        }
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-            }).catch(function (error) {
-                console.log(error);
-            });
-    });
-}
-*/
-
 //Resolves the generated code.
 async function alphaConnectionPartOne() {
     return new Promise((resolve, reject) => {
@@ -54,16 +29,6 @@ async function alphaConnectionPartTwo(data) {
             });
     });
 }
-
-/*
-alphaConnectionPartOne().then(result => {
-    //Here I can send the code back to the renderer to display.
-    alphaConnectionPartTwo(result).then(result => {
-        //This will only be reached once the code was matched.
-        console.log(result);
-    })
-})
-*/
 
 //The party that has to enter the code on their screen
 async function betaConnection(code) {
