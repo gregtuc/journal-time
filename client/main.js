@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const journalIO = require('./io/journal-io');
 const pairer = require('./pairing/pairing');
+const sentimentDetector = require('./sentiment/sentimentDetector');
 
 function createWindow() {
 
@@ -20,9 +21,6 @@ function createWindow() {
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
 
   ipcMain.on("toGetJournalsExist", (event, args) => {
     result = journalIO.journalsExist();
@@ -45,6 +43,7 @@ function createWindow() {
     process.env.PASSWORD = args.data;
   });
   ipcMain.on("toGetSentiment", (event, args) => {
+    var result = sentimentDetector.getSentiment(args.data.body);
     mainWindow.webContents.send("fromGetSentiment", result);
   });
   ipcMain.on("toPairDevices", (event, args) => {

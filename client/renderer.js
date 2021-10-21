@@ -35,7 +35,7 @@ window.addEventListener('load', () => {
     function newButtonHandler() {
         var button = document.getElementById("new-button");
         button.onclick = function () {
-            generateJournalForm("", "", "");
+            generateJournalForm("", "", "", "", "", "");
         }
     }
 
@@ -70,13 +70,13 @@ window.addEventListener('load', () => {
                 journalMenuList.innerHTML = "";
 
                 for (var i = 0; i < journals.length; i++) {
-                    fetchJournalLogic(journals[i].uuid, journals[i].title, journals[i].body, journalMenuList)
+                    fetchJournalLogic(journals[i].uuid, journals[i].title, journals[i].body, journals[i].sentiment, journals[i].datetime.date, journals[i].datetime.time, journalMenuList)
                 }
             }
         });
     }
 
-    function fetchJournalLogic(uuid, title, body, journalMenuList) {
+    function fetchJournalLogic(uuid, title, body, sentiment, date, time, journalMenuList) {
         let listElement = document.createElement("li");
         let journalButton = document.createElement("button");
         journalButton.id = uuid;
@@ -84,14 +84,15 @@ window.addEventListener('load', () => {
         journalButton.textContent = title;
 
         journalButton.onclick = function () {
-            generateJournalForm(uuid, title, body);
+            generateJournalForm(uuid, title, body, sentiment, date, time);
         }
         listElement.appendChild(journalButton);
         journalMenuList.appendChild(listElement);
     }
 
     //Generate the Journal Form in the center of the page with the values passed as parameters.
-    function generateJournalForm(uuid, title, body) {
+    function generateJournalForm(uuid, title, body, sentiment, date, time) {
+
         var titleInput = document.createElement("input");
         titleInput.type = "text";
         titleInput.placeholder = "Journal Title";
@@ -102,6 +103,22 @@ window.addEventListener('load', () => {
         bodyInput.placeholder = "Your Journal";
         bodyInput.id = "journal-board";
         bodyInput.value = body;
+
+        var dateInput = document.createElement("input");
+        dateInput.type = "text";
+        dateInput.id = "journal-date";
+        dateInput.style.width = "50%";
+        dateInput.style.height = "7%";
+        dateInput.value = "Last change made on: " + date + " " + time;
+        dateInput.disabled = true;
+
+        var sentimentInput = document.createElement("input");
+        sentimentInput.type = "text";
+        sentimentInput.id = "journal-sentiment";
+        sentimentInput.style.width = "50%";
+        sentimentInput.style.height = "7%";
+        sentimentInput.value = "Sentiment: " + sentiment;
+        sentimentInput.disabled = true;
 
         var saveButton = document.createElement("button");
         saveButton.id = "save-button";
@@ -123,6 +140,8 @@ window.addEventListener('load', () => {
         var form = document.getElementById("journal-form");
         form.innerHTML = "";
         form.appendChild(titleInput);
+        form.appendChild(dateInput);
+        form.appendChild(sentimentInput);
         form.appendChild(bodyInput);
         form.appendChild(saveButtonContainer);
     }
@@ -193,7 +212,6 @@ window.addEventListener('load', () => {
         window.api.receive("fromPairDevices", (data) => {
             if (data.code) {
 
-                console.log(data.code);
                 //Insert the code into the input elements
                 for (var i = 0; i < 6; i++) {
                     switch (i) {

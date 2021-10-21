@@ -11,6 +11,9 @@ const Store = require('electron-store');
 const journalStore = new Store({ journalModel });
 const dictionaryStore = new Store({ dictionaryModel });
 
+//Sentiment
+const sentimentDetector = require("../sentiment/sentimentDetector");
+
 /**
  * Method to indicate whether journals already exist or not.
  * 
@@ -181,6 +184,7 @@ function getAllJournals() {
         if (currentJournal === false) {
             return false;
         } else {
+            currentJournal.sentiment = sentimentDetector.getSentiment(currentJournal.body);
             journals.push(currentJournal);
         }
     }
