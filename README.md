@@ -1,9 +1,7 @@
 # journal-time
 
 ## To start electron client:
-`cd client`
-`npm start`
+`cd client` then `npm install` then `npm start`
 
 ## To start go server (in separate cmd window):
-`cd server`
-`go run .`
+`cd server` then `go run .`
